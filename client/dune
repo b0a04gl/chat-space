@@ -1,0 +1,4 @@
+(library
+ (name client)
+ (modules client)
+ (libraries shared lwt.unix))

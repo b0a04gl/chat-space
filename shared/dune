@@ -1,0 +1,4 @@
+(library
+ (name shared)
+ (modules shared)
+ (libraries lwt.unix yojson))
