@@ -7,11 +7,14 @@
 (source
  (github b0a04gl/chat-space))
 
+(homepage "https://github.com/b0a04gl/chat-space")
 (authors "Balaji Arumugam")
 
 (maintainers "b0a04gl")
 
 (license MIT)
+
+(version 1.0.0)
 
 (documentation https://github.com/b0a04gl/chat-space#readme)
 
