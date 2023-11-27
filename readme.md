@@ -1,5 +1,3 @@
- Sure! Here's a simplified version of the README:
-
 Chat-Space
 ==========
 
@@ -57,5 +55,5 @@ Follow these steps to build and run the Chat Space application:
 
     Once the client is connected to the server, you can start exchanging messages between the server and client.
 
-Note: Make sure to start the server before the client, and use the same port number for both.
+Note: Make sure to use the same port number for both.
 
