@@ -1,17 +1,19 @@
-(* main.ml *)
-
 open Server
 open Client
 
+let print_help () =
+  Printf.printf "Usage: main.exe <mode: 1 for Server, 2 for Client> <port>\n"
+
 let () =
-  print_endline "Choose mode: (1) Server, (2) Client";
-  match read_int () with
-  | 1 ->
-    print_endline "Enter the port number for the server:";
-    let port = read_int () in
-    start_server port
-  | 2 ->
-    print_endline "Enter the port number for the client:";
-    let port = read_int () in
-    start_client port
-  | _ -> failwith "Invalid choice"
+  match Array.to_list Sys.argv with
+  | [_; "--0help"] | [_; "--0h"] ->
+    print_help ()
+  | [_; mode_str; port_str] ->
+    let mode = int_of_string mode_str in
+    let port = int_of_string port_str in
+    (match mode with
+    | 1 -> start_server port
+    | 2 -> start_client port
+    | _ -> failwith "Invalid choice for mode")
+  | _ ->
+    failwith "Invalid command-line arguments. Use --0help for usage information."
