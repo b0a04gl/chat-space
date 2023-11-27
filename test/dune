@@ -1,4 +1,4 @@
 (test
  (name test_shared)
  (modules test_shared)
- (libraries shared lwt.unix ounit2))
+ (libraries shared lwt ounit2))

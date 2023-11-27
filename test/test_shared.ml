@@ -17,7 +17,6 @@ let test_message_to_json _ =
   ] in
   assert_equal ~printer:Yojson.Basic.to_string expected_json json
 
-
 let suite =
   "Test Suite" >::: [
     "test_generate_message_id" >:: test_generate_message_id;
