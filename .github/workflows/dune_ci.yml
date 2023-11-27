@@ -1,0 +1,37 @@
+name: dune-ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - develop
+      - master
+
+
+permissions: read-all
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        ocaml-compiler:
+          - "5.0"
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v4
+
+      - name: Set-up OCaml ${{ matrix.ocaml-compiler }}
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+
+      - run: opam install . --deps-only --with-test
+
+      - run: opam exec -- dune build
+
+      - run: opam exec -- dune runtest
