@@ -3,8 +3,3 @@
  (modules test_shared)
  (libraries shared lwt ounit2 str))
 
-
- (test
- (name test_main)
- (modules test_main)
- (libraries shared lwt ounit2 str))
