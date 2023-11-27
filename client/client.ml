@@ -10,6 +10,7 @@ let start_client port =
     Printf.printf "Client started..\n> %!"; 
     let in_channel = Lwt_io.of_fd ~mode:Lwt_io.input (Lwt_unix.of_unix_file_descr client_sock) in
     let out_channel = Lwt_io.of_fd ~mode:Lwt_io.output (Lwt_unix.of_unix_file_descr client_sock) in
+    
     let _ = Lwt.async (fun () -> listen_for_messages in_channel out_channel) in
 
     Lwt_main.run (send_user_input out_channel)
