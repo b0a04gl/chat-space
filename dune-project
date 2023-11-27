@@ -13,12 +13,16 @@
 
 (license MIT)
 
-(documentation https://url/to/documentation)
+(documentation https://github.com/b0a04gl/chat-space#readme)
 
 (package
  (name chat_space)
  (synopsis "One-on-one chat")
  (description "Message exchange between client and server using sockets")
- (depends ocaml dune unix)
+ (depends
+  (ocaml (>= 4.08))
+  (dune (>= 3.0.0))
+  (lwt (>= 5.0.0))
+  (yojson (>= 1.7.0)))
  (tags
   (topics "socket" chat_space)))

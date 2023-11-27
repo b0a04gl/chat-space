@@ -7,12 +7,14 @@ authors: ["Balaji Arumugam"]
 license: "MIT"
 tags: ["topics" "socket" "chat_space"]
 homepage: "https://github.com/b0a04gl/chat-space"
-doc: "https://url/to/documentation"
+doc: "https://github.com/b0a04gl/chat-space#readme"
 bug-reports: "https://github.com/b0a04gl/chat-space/issues"
 depends: [
-  "ocaml"
-  "dune" {>= "3.11"}
-  "unix"
+  "ocaml" {>= "4.08"}
+  "dune" {>= "3.11" & >= "3.0.0"}
+  "lwt" {>= "5.0.0"}
+  "lwt-unix" {>= "5.0.0"}
+  "yojson" {>= "1.7.0"}
   "odoc" {with-doc}
 ]
 build: [
