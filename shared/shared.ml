@@ -24,6 +24,14 @@ let message_to_json msg =
     "message_type", `String (match msg.message_type with Normal -> "Normal" | Ack -> "Ack")
   ]
 
+let format_timestamp timestamp =
+  let localtime = Unix.localtime timestamp in
+  Printf.sprintf "%04d-%02d-%02d %02d:%02d:%02d"
+    (localtime.Unix.tm_year + 1900) (localtime.Unix.tm_mon + 1) localtime.Unix.tm_mday
+    localtime.Unix.tm_hour localtime.Unix.tm_min localtime.Unix.tm_sec
+
+
+
 let send_message out_channel message =
   let json_message = to_string (message_to_json message) in
   Lwt_io.write_line out_channel json_message >>= fun () ->
@@ -45,28 +53,39 @@ let receive_message in_channel =
 
 let rtt_map : (int, float) Hashtbl.t = Hashtbl.create 10
 
+let print_normal_message received_message =
+  let formatted_message =
+    Printf.sprintf "Timestamp@%s : %s"
+      (format_timestamp received_message.created_time)
+      received_message.payload
+  in
+  Lwt_io.printf "> %s\n" formatted_message
+
+
+let send_ack_message received_message out_channel =
+  let ack_message = { id = received_message.id; payload = "Ack"; created_time = Unix.gettimeofday (); message_type = Ack } in
+  send_message out_channel ack_message
+
+let handle_ack_message received_message =
+  try
+    let send_time = Hashtbl.find rtt_map received_message.id in
+    let rtt_ns = (Unix.gettimeofday () -. send_time) *. 1_000_000.0 in
+    Lwt_io.printf "=> RTT for message %d: %.0f milliseconds\n" received_message.id rtt_ns >>= fun () ->
+    Lwt_io.printf "> %!"
+  with Not_found -> Lwt.return_unit
+
 let rec listen_for_messages in_channel out_channel =
   receive_message in_channel >>= fun received_message ->
   match received_message.message_type with
   | Normal ->
-    let formatted_message =
-      Printf.sprintf "Timestamp#%.3f : %s"
-        received_message.created_time
-        received_message.payload
-    in
-    Lwt_io.printf "> %s\n" formatted_message >>= fun () ->
+    print_normal_message received_message >>= fun () ->
     Lwt_io.printf "> %!" >>= fun () ->
-    let ack_message = { id = received_message.id; payload = "Ack"; created_time = Unix.gettimeofday (); message_type = Ack } in
-    send_message out_channel ack_message >>= fun () ->
+    send_ack_message received_message out_channel >>= fun () ->
     listen_for_messages in_channel out_channel
   | Ack ->
-    (try
-      let send_time = Hashtbl.find rtt_map received_message.id in
-      let rtt_ns = (Unix.gettimeofday () -. send_time) *. 1_000_000_000.0 in
-      Lwt_io.printf "=> RTT for message %d: %.0f nanoseconds\n" received_message.id rtt_ns >>= fun () ->
-      Lwt_io.printf "> %!" >>= fun () ->
-      listen_for_messages in_channel out_channel
-     with Not_found -> listen_for_messages in_channel out_channel)
+    handle_ack_message received_message >>= fun () ->
+    listen_for_messages in_channel out_channel
+
 
 let rec send_user_input out_channel =
  
