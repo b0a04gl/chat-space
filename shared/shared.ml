@@ -74,26 +74,46 @@ let handle_ack_message received_message =
     Lwt_io.printf "> %!"
   with Not_found -> Lwt.return_unit
 
-let rec listen_for_messages in_channel out_channel =
-  receive_message in_channel >>= fun received_message ->
-  match received_message.message_type with
-  | Normal ->
-    print_normal_message received_message >>= fun () ->
-    Lwt_io.printf "> %!" >>= fun () ->
-    send_ack_message received_message out_channel >>= fun () ->
-    listen_for_messages in_channel out_channel
-  | Ack ->
-    handle_ack_message received_message >>= fun () ->
-    listen_for_messages in_channel out_channel
+  let rec listen_for_messages in_channel out_channel =
+    let on_channel_closed () =
+      (* Handle channel closure *)
+      Printf.printf "Channel closed. Cleaning up...\n";
+      Lwt_io.close out_channel >>= fun () ->
+      Lwt.return_unit
+    in
+  
+    Lwt.catch
+      (fun () ->
+        receive_message in_channel >>= fun received_message ->
+        match received_message.message_type with
+        | Normal ->
+          print_normal_message received_message >>= fun () ->
+          Lwt_io.printf "> %!" >>= fun () ->
+          send_ack_message received_message out_channel >>= fun () ->
+          listen_for_messages in_channel out_channel
+        | Ack ->
+          handle_ack_message received_message >>= fun () ->
+          listen_for_messages in_channel out_channel
+      )
+      (function
+        | Lwt.Canceled ->
+          on_channel_closed ()
+        | ex ->
+          Printf.printf "Error receiving message: %s\n" (Printexc.to_string ex);
+          on_channel_closed ()
+      )
+  
 
 
-let rec send_user_input out_channel =
- 
+let rec send_user_input in_channel out_channel =
   Lwt_io.read_line_opt Lwt_io.stdin >>= function
   | Some user_input ->
     let message = { id = generate_message_id (); payload = user_input; created_time = Unix.gettimeofday (); message_type = Normal } in
     Hashtbl.add rtt_map message.id message.created_time;
     send_message out_channel message >>= fun () ->
-    send_user_input out_channel
+    send_user_input in_channel out_channel
   | None ->
+    (* Close the channels when user input ends *)
+    Lwt_io.close in_channel >>= fun () ->
+    Lwt_io.close out_channel >>= fun () ->
     Lwt.return_unit
