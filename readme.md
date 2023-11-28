@@ -22,7 +22,7 @@ Development Progress
 4. User Interface Enhancement (v0.4): Adopted console-based UI for simplicity and efficiency
 5. Strengthening Robustness (v0.5): Addressed potential communication issues with error handling mechanisms
 6. Introducing Latency Insights (v1.0): Integrated feature to measure roundtrip time for communication latency insights
-7. Server to stay alive (v1.1) : Made server to stay live despite client losing connection and wait for next single client.
+7. Server to stay alive (v1.1) [WIP] : Made server to stay live despite client losing connection and wait for next single client.
 
 ## Usage
 
