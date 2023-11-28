@@ -22,6 +22,7 @@ Development Progress
 4. User Interface Enhancement (v0.4): Adopted console-based UI for simplicity and efficiency
 5. Strengthening Robustness (v0.5): Addressed potential communication issues with error handling mechanisms
 6. Introducing Latency Insights (v1.0): Integrated feature to measure roundtrip time for communication latency insights
+7. Server to stay alive (v1.1) : Made server to stay live despite client losing connection and wait for next single client.
 
 ## Usage
 
@@ -35,7 +36,7 @@ Follow these steps to build and run the Chat Space application:
 
     To view usage information, run:
     ```bash
-    $ dune exec -- ./main.exe --0help
+    $ dune exec -- ./bin/main.exe  --0help
     ```
 
 2. **Run the Server**:
@@ -43,13 +44,13 @@ Follow these steps to build and run the Chat Space application:
     Choose a port number (e.g., 9999) to start the server.
 
     ```bash
-    $ dune exec ./bin/main.exe 1 9999
+    $ dune exec -- ./bin/main.exe 1 9999
     ```
 3. **Run the Client**:
 
     Choose the same port number that the server is running on to start
     ```bash 
-    $ dune exec ./bin/main.exe 2 9999
+    $ dune exec -- ./bin/main.exe 2 9999
     ```
 4. **Message Exchange**:
 
