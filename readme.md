@@ -40,16 +40,16 @@ Follow these steps to build and run the Chat Space application:
 
 2. **Run the Server**:
 
-    Choose a port number (e.g., 9988) to start the server.
+    Choose a port number (e.g., 9999) to start the server.
 
     ```bash
-    $ dune exec -- ./main.exe 1 9988
+    $ dune exec ./bin/main.exe 1 9999
     ```
 3. **Run the Client**:
 
     Choose the same port number that the server is running on to start
     ```bash 
-    $ dune exec -- ./main.exe 2 9988
+    $ dune exec ./bin/main.exe 2 9999
     ```
 4. **Message Exchange**:
 
