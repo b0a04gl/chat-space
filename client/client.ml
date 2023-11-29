@@ -13,7 +13,7 @@ let start_client port =
     
     let _ = Lwt.async (fun () -> listen_for_messages in_channel out_channel) in
 
-    Lwt_main.run (send_user_input out_channel)
+    Lwt_main.run (send_user_input in_channel out_channel)
   with
   | Unix.Unix_error (Unix.ECONNREFUSED, _, _) ->
     Printf.printf "Error: Server is not alive. Exiting...\n"

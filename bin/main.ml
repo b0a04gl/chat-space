@@ -2,7 +2,7 @@ open Server
 open Client
 
 let print_help () =
-  Printf.printf "Usage: main.exe <mode: 1 for Server, 2 for Client> <port>\n"
+  Printf.printf "Usage: dune exec ./bin/main.exe <mode: 1 for Server, 2 for Client> <port>\n"
 
 let () =
   match Array.length Sys.argv with
